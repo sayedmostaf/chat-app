@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class RegisterPage extends StatefulWidget {
-  RegisterPage({super.key});
+  const RegisterPage({super.key});
   static String id = 'registerPage';
 
   @override
@@ -100,21 +100,26 @@ class _RegisterPageState extends State<RegisterPage> {
                         isLoading = true;
                         setState(() {});
                         try {
-                          await registerUser();
-                          Navigator.pushNamed(context, ChatPage.id,
-                              arguments: email);
+                          await registerUser().then((_) {
+                            Navigator.pushNamed(context, ChatPage.id,
+                                arguments: email);
+                          });
                         } on FirebaseAuthException catch (e) {
                           if (e.code == 'weak-password') {
                             showSnackBar(context, 'weak password');
                           } else if (e.code == 'email-already-in-use') {
                             showSnackBar(context, 'email already exists');
+                          } else {
+                            showSnackBar(context, e.message.toString());
                           }
                         } catch (ex) {
                           showSnackBar(context, 'there was an error');
                         }
                         isLoading = false;
                         setState(() {});
-                      } else {}
+                      } else {
+                        showSnackBar(context, 'Invalid Input data');
+                      }
                     },
                     text: 'REGISTER'),
                 const SizedBox(

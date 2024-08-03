@@ -105,7 +105,7 @@ class ChatPage extends StatelessWidget {
               ),
             );
           } else {
-            return const Text('Loading...');
+            return const Scaffold(body: Center(child: Text('Loading...')));
           }
         });
   }

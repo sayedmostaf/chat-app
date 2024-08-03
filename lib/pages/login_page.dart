@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({super.key});
+  const LoginPage({super.key});
   static String id = 'login page';
 
   @override
@@ -98,21 +98,26 @@ class _LoginPageState extends State<LoginPage> {
                         isLoading = true;
                         setState(() {});
                         try {
-                          await loginUser();
-                          Navigator.pushNamed(context, ChatPage.id,
-                              arguments: email);
+                          await loginUser().then((_) {
+                            Navigator.pushNamed(context, ChatPage.id,
+                                arguments: email);
+                          });
                         } on FirebaseAuthException catch (e) {
                           if (e.code == 'user-not-found') {
                             showSnackBar(context, 'user not found');
                           } else if (e.code == 'wrong-password') {
                             showSnackBar(context, 'wrong password');
+                          } else {
+                            showSnackBar(context, e.message.toString());
                           }
                         } catch (e) {
                           showSnackBar(context, 'there was an error');
                         }
                         isLoading = false;
                         setState(() {});
-                      } else {}
+                      } else {
+                        showSnackBar(context, 'Invalid Input data');
+                      }
                     },
                     text: 'LOGIN'),
                 const SizedBox(
